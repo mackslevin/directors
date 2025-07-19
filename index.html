@@ -465,7 +465,12 @@
                 // --- Create Timeline ---
                 const timelineContainer = document.createElement('div');
                 timelineContainer.className = 'mb-8 p-6 bg-white dark:bg-zinc-800 border-2 border-zinc-800 dark:border-zinc-200';
-                let timelineHtml = '<h4 class="text-2xl mb-4">Timeline</h4><div class="text-sm md:columns-2 lg:columns-3 gap-x-8">';
+                let timelineHtml = `
+                    <div class="flex flex-row justify-between mb-4 gap-0">
+                        <h4 class="text-2xl">Timeline</h4>
+                        <span class="text-xs text-zinc-400 dark:text-zinc-500 font-bold">${films.length} ${films.length === 1 ? 'film' : 'films'}</span>\
+                    </div>
+                    <div class="text-sm md:columns-2 lg:columns-3 gap-x-8">`;
                 films.forEach(film => {
                     const year = film.release_date ? film.release_date.substring(0, 4) : 'N/A';
                     timelineHtml += `<p class="mb-1 break-inside-avoid"><span class="font-bold">${year}</span> - ${film.title}</p>`;
