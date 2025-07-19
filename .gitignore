@@ -1,0 +1,22 @@
+# OS generated files
+.DS_Store
+Thumbs.db
+._*
+
+# Editor/IDE generated files
+*~
+*.swp
+*.swo
+.vscode/ # Optional: ignore VS Code workspace settings
+
+# Build/output directories (if applicable in the future)
+/dist/
+/build/
+/_site/
+
+# Dependency directories (if applicable in the future)
+/node_modules/
+/vendor/
+
+# Log files
+*.log

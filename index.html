@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directors</title>
+
+    <!-- PWA Manifest and Theme Color -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1f2937">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&family=Bebas+Neue&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Alegreya', serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 0.05em;
+        }
+
+        /* Custom Styles to look less like default Tailwind */
+        .custom-card {
+            border: 2px solid #1f2937;
+            box-shadow: 6px 6px 0px #1f2937;
+            transition: all 0.2s ease-out;
+        }
+
+        .dark .custom-card {
+            border-color: #d1d5db;
+            box-shadow: 6px 6px 0px #d1d5db;
+        }
+
+        .custom-input {
+            border-width: 2px;
+            outline: none;
+        }
+
+        .custom-input:focus {
+            box-shadow: 0 0 0 3px var(--accent-color-focus, rgba(59, 130, 246, 0.5));
+        }
+
+        .custom-btn {
+            border: 2px solid #1f2937;
+            box-shadow: 4px 4px 0px #1f2937;
+            transition: all 0.2s ease-out;
+        }
+
+        .custom-btn:hover,
+        .custom-btn:focus {
+            box-shadow: 1px 1px 0px #1f2937;
+            transform: translate(3px, 3px);
+        }
+
+        .dark .custom-btn {
+            border-color: #f9fafb;
+            box-shadow: 4px 4px 0px #f9fafb;
+        }
+
+        .dark .custom-btn:hover,
+        .dark .custom-btn:focus {
+            box-shadow: 1px 1px 0px #f9fafb;
+        }
+
+        .color-swatch {
+            width: 2.5rem;
+            height: 2.5rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.1s ease-out;
+        }
+
+        .color-swatch.selected {
+            border-color: #1f2937;
+            transform: scale(1.1);
+        }
+
+        .dark .color-swatch.selected {
+            border-color: #f9fafb;
+        }
+
+        /* Style for the loader */
+        .loader {
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #1f2937;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        .dark .loader {
+            border: 4px solid #374151;
+            /* Gray 700 */
+            border-top: 4px solid #d1d5db;
+            /* Gray 300 */
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 transition-colors duration-300">
+
+    <div class="container mx-auto p-4 sm:p-8 max-w-4xl">
+
+        <header class="mb-12">
+            <div class="flex justify-between items-center">
+                <h1 class="text-6xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Directors!</h1>
+                <button id="settingsBtn"
+                    class="p-2 text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Search Section -->
+        <div id="searchSection" class="mb-12 hidden">
+            <form id="searchForm">
+                <label for="directorName" class="sr-only">Director's Name</label>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <input type="text" id="directorName"
+                        class="custom-input flex-grow p-4 border-zinc-400 dark:border-zinc-600 bg-white dark:bg-zinc-800"
+                        placeholder="e.g., Andrei Tarkovsky">
+                    <button type="submit"
+                        class="custom-btn px-8 py-4 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-zinc-900 font-semibold">Search</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        <main id="resultsContainer">
+            <!-- Loader, choices, or film cards will be inserted here -->
+        </main>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 z-10 hidden">
+        <!-- Overlay -->
+        <div id="modalOverlay" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+        <!-- Panel -->
+        <div class="relative flex items-center justify-center h-full p-4">
+            <div id="modalPanel"
+                class="relative w-full max-w-md bg-white dark:bg-zinc-800 custom-card max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-4xl">Settings</h2>
+                        <button id="closeModalBtn"
+                            class="p-2 text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- API Key Input -->
+                        <div>
+                            <h3 class="text-2xl mb-2">API Key</h3>
+                            <label for="apiKey"
+                                class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">TMDb API Key
+                                (v3)</label>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="password" id="apiKey"
+                                    class="custom-input flex-grow p-3 border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-700"
+                                    placeholder="Your TMDb v3 API Key">
+                            </div>
+                            <p id="apiKeyError" class="text-sm text-red-500 mt-2 hidden"></p>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2">Get a free key from <a
+                                    href="https://www.themoviedb.org/signup" target="_blank"
+                                    class="accent-text hover:underline">The Movie Database</a>.</p>
+                        </div>
+
+                        <!-- Accent Color Picker -->
+                        <div>
+                            <h3 class="text-2xl mb-2">Accent Color</h3>
+                            <div id="colorSwatchContainer" class="flex gap-2">
+                                <!-- Swatches will be generated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6 bg-zinc-50 dark:bg-zinc-900/50 border-t-2 border-zinc-800 dark:border-zinc-200">
+                    <button id="saveSettingsBtn"
+                        class="w-full px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 accent-bg">Save
+                        and Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchSection = document.getElementById('searchSection');
+            const searchForm = document.getElementById('searchForm');
+            const directorNameInput = document.getElementById('directorName');
+            const resultsContainer = document.getElementById('resultsContainer');
+
+            // Modal elements
+            const settingsBtn = document.getElementById('settingsBtn');
+            const settingsModal = document.getElementById('settingsModal');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalPanel = document.getElementById('modalPanel');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+
+            // Settings elements
+            const apiKeyInput = document.getElementById('apiKey');
+            const apiKeyError = document.getElementById('apiKeyError');
+            const colorSwatchContainer = document.getElementById('colorSwatchContainer');
+
+            const ACCENT_COLORS = [
+                { name: 'blue', hex: '#3b82f6', focus: 'rgba(59, 130, 246, 0.5)' },
+                { name: 'rose', hex: '#f43f5e', focus: 'rgba(244, 63, 94, 0.5)' },
+                { name: 'amber', hex: '#f59e0b', focus: 'rgba(245, 158, 11, 0.5)' },
+                { name: 'emerald', hex: '#10b981', focus: 'rgba(16, 185, 129, 0.5)' },
+                { name: 'violet', hex: '#8b5cf6', focus: 'rgba(139, 92, 246, 0.5)' },
+            ];
+
+            // --- Modal Logic ---
+            function openModal() { settingsModal.classList.remove('hidden'); }
+            function closeModal() { settingsModal.classList.add('hidden'); }
+            settingsBtn.addEventListener('click', openModal);
+            closeModalBtn.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', closeModal);
+            modalPanel.addEventListener('click', (e) => e.stopPropagation());
+
+            // --- Theme & Color Logic ---
+            function applySystemTheme() {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.classList.toggle('dark', prefersDark);
+            }
+
+            function applyAccentColor(colorData) {
+                localStorage.setItem('accentColor', JSON.stringify(colorData));
+                document.documentElement.style.setProperty('--accent-color-focus', colorData.focus);
+
+                document.querySelectorAll('.accent-bg').forEach(el => el.style.backgroundColor = colorData.hex);
+                document.querySelectorAll('.accent-text').forEach(el => el.style.color = colorData.hex);
+
+                // Update selected swatch
+                document.querySelectorAll('.color-swatch').forEach(swatch => {
+                    swatch.classList.toggle('selected', swatch.dataset.colorName === colorData.name);
+                });
+            }
+
+            function initializeAccentColor() {
+                const savedColor = localStorage.getItem('accentColor');
+                const initialColor = savedColor ? JSON.parse(savedColor) : ACCENT_COLORS[0];
+                applyAccentColor(initialColor);
+            }
+
+            function renderColorSwatches() {
+                colorSwatchContainer.innerHTML = '';
+                ACCENT_COLORS.forEach(color => {
+                    const swatch = document.createElement('button');
+                    swatch.className = 'color-swatch';
+                    swatch.style.backgroundColor = color.hex;
+                    swatch.dataset.colorName = color.name;
+                    colorSwatchContainer.appendChild(swatch);
+                });
+            }
+
+            colorSwatchContainer.addEventListener('click', (e) => {
+                const swatch = e.target.closest('.color-swatch');
+                if (swatch) {
+                    const colorData = ACCENT_COLORS.find(c => c.name === swatch.dataset.colorName);
+                    if (colorData) {
+                        applyAccentColor(colorData);
+                    }
+                }
+            });
+
+            // --- App Initialization ---
+            let tmdbApiKey = '';
+
+            applySystemTheme();
+            initializeAccentColor();
+            renderColorSwatches();
+
+            const savedKey = localStorage.getItem('tmdbApiKey');
+            if (savedKey) {
+                tmdbApiKey = savedKey;
+                apiKeyInput.value = savedKey;
+                searchSection.classList.remove('hidden');
+            } else {
+                searchSection.classList.add('hidden');
+                resultsContainer.innerHTML = `
+                <div class="text-center p-10 bg-white dark:bg-zinc-800 border-2 border-zinc-800 dark:border-zinc-200">
+                    <h2 class="text-3xl">Welcome to Directors</h2>
+                    <p class="mt-2 text-zinc-600 dark:text-zinc-300 text-lg">To get started, please add your TMDb API key in the settings.</p>
+                    <button id="initialSettingsBtn" class="custom-btn mt-6 px-6 py-3 text-white font-semibold accent-bg">Open Settings</button>
+                </div>
+            `;
+                document.getElementById('initialSettingsBtn').addEventListener('click', openModal);
+                // Re-apply accent after creating button
+                initializeAccentColor();
+                openModal();
+            }
+
+            saveSettingsBtn.addEventListener('click', () => {
+                const key = apiKeyInput.value.trim();
+                if (key) {
+                    tmdbApiKey = key;
+                    localStorage.setItem('tmdbApiKey', key);
+                    searchSection.classList.remove('hidden');
+                    resultsContainer.innerHTML = ''; // Clear initial message
+                    closeModal();
+                    if (!directorNameInput.value) directorNameInput.focus();
+                } else {
+                    apiKeyError.textContent = 'A valid API key is required to use the app.';
+                    apiKeyError.classList.remove('hidden');
+                    apiKeyInput.focus();
+                }
+            });
+
+            apiKeyInput.addEventListener('input', () => {
+                apiKeyError.classList.add('hidden');
+            });
+
+            searchForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const directorName = directorNameInput.value.trim();
+                if (!directorName) return;
+                resultsContainer.innerHTML = '<div class="loader"></div>';
+                try {
+                    const directors = await searchForDirectors(directorName);
+                    if (directors.length === 0) {
+                        throw new Error(`Director "${directorName}" not found.`);
+                    } else if (directors.length === 1) {
+                        await getAndDisplayFilms(directors[0].id, directors[0].name);
+                    } else {
+                        displayDirectorChoices(directors);
+                    }
+                } catch (error) {
+                    displayError(error.message);
+                }
+            });
+
+            async function searchForDirectors(name) {
+                const url = `https://api.themoviedb.org/3/search/person?api_key=${tmdbApiKey}&query=${encodeURIComponent(name)}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Failed to connect to TMDb. Check your API key and network.');
+                const data = await response.json();
+                return data.results.sort((a, b) => (a.known_for_department === 'Directing' ? -1 : 1) - (b.known_for_department === 'Directing' ? -1 : 1));
+            }
+
+            function displayDirectorChoices(directors) {
+                resultsContainer.innerHTML = '';
+                const header = document.createElement('h2');
+                header.className = 'text-4xl font-bold text-zinc-800 dark:text-zinc-200 mb-4';
+                header.textContent = 'Did you mean...';
+                resultsContainer.appendChild(header);
+                const list = document.createElement('div');
+                list.className = 'bg-white dark:bg-zinc-800 border-2 border-zinc-800 dark:border-zinc-200';
+                directors.slice(0, 10).forEach(director => {
+                    const item = document.createElement('div');
+                    item.className = 'p-4 border-b-2 border-zinc-800 dark:border-zinc-200 last:border-b-0 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-700 transition';
+                    item.dataset.id = director.id;
+                    item.dataset.name = director.name;
+                    const knownFor = director.known_for_department || 'Actor';
+                    item.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <img src="${director.profile_path ? `https://image.tmdb.org/t/p/w92${director.profile_path}` : 'https://placehold.co/92x138/f4f4f5/333333?text=No+Image'}" class="w-16 h-16 object-cover bg-zinc-200 dark:bg-zinc-700 border-2 border-zinc-800 dark:border-zinc-200">
+                        <div>
+                            <p class="font-bold text-xl">${director.name}</p>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400">${knownFor}</p>
+                        </div>
+                    </div>
+                `;
+                    list.appendChild(item);
+                });
+                resultsContainer.appendChild(list);
+            }
+
+            resultsContainer.addEventListener('click', async (e) => {
+                const choice = e.target.closest('[data-id]');
+                if (choice) {
+                    const { id, name } = choice.dataset;
+                    await getAndDisplayFilms(id, name);
+                }
+            });
+
+            async function getAndDisplayFilms(directorId, directorName) {
+                resultsContainer.innerHTML = '<div class="loader"></div>';
+                try {
+                    const films = await getDirectorFilms(directorId);
+                    displayFilms(films, directorName, directorId);
+                } catch (error) {
+                    displayError(error.message);
+                }
+            }
+
+            async function getDirectorFilms(directorId) {
+                const url = `https://api.themoviedb.org/3/person/${directorId}/movie_credits?api_key=${tmdbApiKey}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Could not fetch film credits.');
+                const data = await response.json();
+                const directedFilms = data.crew.filter(credit => credit.job === 'Director');
+                const uniqueFilms = Array.from(new Map(directedFilms.map(film => [film.id, film])).values());
+                const filmDetailsPromises = uniqueFilms.map(film => getFilmDetails(film.id));
+                const filmsWithDetails = await Promise.all(filmDetailsPromises);
+                return filmsWithDetails.filter(film => film).sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
+            }
+
+            async function getFilmDetails(movieId) {
+                const url = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${tmdbApiKey}&append_to_response=credits,external_ids,watch/providers`;
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) return null;
+                    const data = await response.json();
+                    const isFeature = data.runtime > 70;
+                    const isReleased = data.status === "Released";
+                    const isDocumentary = data.genres.some(g => g.name === 'Documentary');
+                    return (isFeature && isReleased && !isDocumentary) ? data : null;
+                } catch (error) {
+                    console.error(`Failed to fetch details for movie ID ${movieId}:`, error);
+                    return null;
+                }
+            }
+
+            function displayFilms(films, directorName, directorId) {
+                resultsContainer.innerHTML = '';
+                if (films.length === 0) {
+                    displayError(`No feature films found for director "${directorName}".`);
+                    return;
+                }
+
+                // --- Create Timeline ---
+                const timelineContainer = document.createElement('div');
+                timelineContainer.className = 'mb-8 p-6 bg-white dark:bg-zinc-800 border-2 border-zinc-800 dark:border-zinc-200';
+                let timelineHtml = '<h4 class="text-2xl mb-4">Timeline</h4><div class="text-sm md:columns-2 lg:columns-3 gap-x-8">';
+                films.forEach(film => {
+                    const year = film.release_date ? film.release_date.substring(0, 4) : 'N/A';
+                    timelineHtml += `<p class="mb-1 break-inside-avoid"><span class="font-bold">${year}</span> - ${film.title}</p>`;
+                });
+                timelineHtml += '</div>';
+                timelineContainer.innerHTML = timelineHtml;
+                resultsContainer.appendChild(timelineContainer);
+
+                // --- Create Main Header ---
+                const directorHeader = document.createElement('h2');
+                const directorLink = `https://www.themoviedb.org/person/${directorId}`;
+                directorHeader.className = 'text-4xl font-bold text-zinc-800 dark:text-zinc-200 mb-6 pb-2 border-b-2 border-zinc-300 dark:border-zinc-700';
+                directorHeader.innerHTML = `
+                Feature Films Directed by 
+                <a href="${directorLink}" target="_blank" class="accent-text underline hover:no-underline">
+                    ${directorName}
+                </a>
+            `;
+                resultsContainer.appendChild(directorHeader);
+
+                // --- Create Film Cards ---
+                const filmGrid = document.createElement('div');
+                filmGrid.className = 'space-y-8';
+                films.forEach(film => {
+                    const year = film.release_date ? film.release_date.substring(0, 4) : 'N/A';
+                    const rating = film.vote_average ? film.vote_average.toFixed(1) : 'N/A';
+                    const tmdbLink = `https://www.themoviedb.org/movie/${film.id}`;
+                    const letterboxdLink = film.external_ids.imdb_id ? `https://letterboxd.com/imdb/${film.external_ids.imdb_id}` : '';
+
+                    const topCast = film.credits.cast.slice(0, 5).map(actor => `
+                    <a href="https://www.themoviedb.org/person/${actor.id}" target="_blank" class="text-center group">
+                        <img src="${actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : 'https://placehold.co/185x278/e4e4e7/333333?text=N/A'}" alt="${actor.name}" class="w-20 h-20 object-cover bg-zinc-200 dark:bg-zinc-700 border-2 border-zinc-800 dark:border-zinc-200 transition">
+                        <span class="text-xs w-20 block mt-1 group-hover:underline">${actor.name}</span>
+                    </a>
+                `).join('');
+
+                    const watchProviders = film['watch/providers']?.results?.US?.flatrate;
+                    let providersHtml = '';
+                    if (watchProviders && watchProviders.length > 0) {
+                        providersHtml = `
+                        <div class="mt-4">
+                            <h4 class="text-lg uppercase">Streaming On</h4>
+                            <div class="flex items-center gap-3 mt-2">
+                                ${watchProviders.map(p => `<img src="https://image.tmdb.org/t/p/w45${p.logo_path}" alt="${p.provider_name}" title="${p.provider_name}" class="w-8 h-8">`).join('')}
+                            </div>
+                        </div>
+                    `;
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'bg-white dark:bg-zinc-800 p-6 custom-card';
+                    card.innerHTML = `
+                    <div class="flex flex-col sm:flex-row gap-6">
+                        <div class="w-full sm:w-1/4">
+                             <img src="${film.poster_path ? `https://image.tmdb.org/t/p/w342${film.poster_path}` : 'https://placehold.co/342x513/f4f4f5/333333?text=No+Poster'}" alt="Poster for ${film.title}" class="w-full border-2 border-zinc-800 dark:border-zinc-200" onerror="this.onerror=null;this.src='https://placehold.co/342x513/f4f4f5/333333?text=No+Poster';">
+                        </div>
+                        <div class="w-full sm:w-3/4">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-5xl">${film.title}</h3>
+                                <span class="text-4xl font-semibold text-zinc-400 dark:text-zinc-500 whitespace-nowrap pl-4">${year}</span>
+                            </div>
+                            <p class="mt-4 text-zinc-600 dark:text-zinc-300 max-w-prose text-lg">${film.overview}</p>
+                            
+                            <div class="mt-4 pt-4 border-t-2 border-zinc-200 dark:border-zinc-700">
+                                <h4 class="text-lg uppercase mb-2">Starring</h4>
+                                <div class="flex flex-wrap gap-4">${topCast}</div>
+                            </div>
+
+                            <div class="mt-4 pt-4 border-t-2 border-zinc-200 dark:border-zinc-700">
+                                <p class="font-bold mt-1 text-lg"><span class="text-zinc-500 dark:text-zinc-400">Rating:</span> ${rating} / 10</p>
+                            </div>
+
+                            <div class="mt-4 pt-4 border-t-2 border-zinc-200 dark:border-zinc-700">
+                                <h4 class="text-lg uppercase">Links</h4>
+                                <div class="flex items-center gap-4 mt-2 underline">
+                                    <a href="${tmdbLink}" target="_blank" class="accent-text">TMDb</a>
+                                    ${letterboxdLink ? `<a href="${letterboxdLink}" target="_blank" class="accent-text">Letterboxd</a>` : ''}
+                                </div>
+                            </div>
+                            ${providersHtml}
+                        </div>
+                    </div>
+                `;
+                    filmGrid.appendChild(card);
+                });
+                resultsContainer.appendChild(filmGrid);
+                // Re-apply accent color to new dynamic links
+                const savedColor = localStorage.getItem('accentColor');
+                if (savedColor) applyAccentColor(JSON.parse(savedColor));
+            }
+
+            function displayError(message) {
+                resultsContainer.innerHTML = `
+                <div class="bg-red-100 dark:bg-red-900/50 border-2 border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3" role="alert">
+                    <strong class="font-bold text-lg">Error:</strong>
+                    <span class="block sm:inline">${message}</span>
+                </div>
+            `;
+            }
+        });
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js').then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>
