@@ -5,7 +5,7 @@
   "display": "standalone",
   "background_color": "#111827",
   "theme_color": "#111827",
-  "description": "An app to browse the filmography of film directors.",
+  "description": "An app to browse the filmographies of film directors.",
   "icons": [
     {
       "src": "icon-192.png",
